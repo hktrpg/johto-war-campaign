@@ -1,1 +1,17 @@
 /.venv
+/tts_extract_*/
+/_official_art_sources/
+/_rulebook_pdfs/
+/3.1.0
+
+# Local scratch / preview / backup artifacts
+Card Generator/card_generator/_*/
+Card Generator/card_generator/_*.png
+Card Generator/_*.json
+Card Generator/_*.csv
+Card Generator/*.pre_*_backup.xlsx
+Card Generator/**/*.bak_en.png
+Card Generator/**/*_backup/
+tools/__pycache__/
+**/__pycache__/
+*.pyc

@@ -6,7 +6,7 @@ from PIL import ImageDraw
 from tqdm import tqdm
 
 from config import *
-from utils import xy, read_cube, get_img, text_font, title_font, bold_font, wrapped_text
+from utils import xy, read_cube, get_img, text_font, title_font, bold_font, wrapped_text  # noqa: F401
 
 
 #
@@ -22,12 +22,23 @@ def add_move(img, stats):
 
     # Determine fill color based on image_type
     fill_color = WHITE_COLOUR if stats.image_type == "Warp" else DARK_COLOUR
-  
-    # Card Name
-    d.text(xy(8, 21), str(stats.internal_name), fill=fill_color, font=text_font(36), anchor='mm')
-     
-    # Effect
-    wrapped_text(d, stats.card_effect, text_font(28), boundaries=(13.82, 5.06), xy=xy(8, 24.44), fill=fill_color,
+
+    # Header (top sky band)
+    header = '神社祝福'
+    wrapped_text(d, header, bold_font(40, header), boundaries=(12, 1.6), xy=xy(8, 1.45), fill=WHITE_COLOUR,
+                 anchor='mm', align='center')
+
+    # Multiplayer note — single line inside upper white capsule (y≈15.02)
+    note = '4人以上：另選一位訓練家也獲得此效果'
+    wrapped_text(d, note, bold_font(22, note), boundaries=(13.9, 1.8), xy=xy(8, 15.02), fill=DARK_COLOUR,
+                 anchor='mm', align='center')
+
+    # Card name — mid padding in bottom white box (box y≈19.8–27.3)
+    name = str(stats.internal_name)
+    d.text(xy(8, 20.85), name, fill=fill_color, font=bold_font(36, name), anchor='mm')
+
+    # Effect — centered in remaining lower box area
+    wrapped_text(d, stats.card_effect, text_font(28, stats.card_effect), boundaries=(13.5, 5.4), xy=xy(8, 24.1), fill=fill_color,
                  anchor='mm', align='center')
     
 

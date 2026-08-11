@@ -3,7 +3,7 @@ from PIL import ImageDraw
 from tqdm import tqdm
 
 from config import *
-from utils import xy, read_cube, get_img, wrapped_text, text_font, title_font
+from utils import xy, read_cube, get_img, wrapped_text, text_font, title_font, resolve_move_effect
 
 
 def get_base():
@@ -76,11 +76,14 @@ def add_header(img, stats):
 def add_description(img, stats):
     d = ImageDraw.Draw(img)
 
+    effect = resolve_move_effect(stats)
+    if not effect:
+        return
     if str(stats.archetype_count) in {"1", "2", "3"}:
-        wrapped_text(d, stats.move_effect, text_font(28), boundaries=(13.5, 3.6), xy=xy(7.25, 4.27), fill=DARK_COLOUR,
+        wrapped_text(d, effect, text_font(28, effect), boundaries=(13.5, 3.6), xy=xy(7.25, 4.27), fill=DARK_COLOUR,
                      anchor='mm', align='center')
     else:
-        wrapped_text(d, stats.move_effect, text_font(28), boundaries=(13.5, 4.5), xy=xy(7.25, 4.75), fill=DARK_COLOUR,
+        wrapped_text(d, effect, text_font(28, effect), boundaries=(13.5, 4.5), xy=xy(7.25, 4.75), fill=DARK_COLOUR,
                      anchor='mm', align='center')
 
 
