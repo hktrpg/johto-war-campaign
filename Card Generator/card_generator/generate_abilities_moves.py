@@ -3,7 +3,7 @@ from PIL import ImageDraw
 from tqdm import tqdm
 
 from config import *
-from utils import xy, read_cube, get_img, wrapped_text, text_font, title_font
+from utils import xy, read_cube, get_img, wrapped_text, text_font, title_font, bold_font
 
 
 def get_base():
@@ -18,7 +18,8 @@ def add_header(img, stats):
     img.paste(type_img, xy(0.25, 0.25), type_img)
 
     # Move Name
-    wrapped_text(d, stats.ability_name, text_font(36), boundaries=(9.5, 1.75), xy=xy(7.25, 1.25), fill=DARK_COLOUR,
+    name = str(stats.ability_name)
+    wrapped_text(d, name, bold_font(36, name), boundaries=(9.5, 1.75), xy=xy(7.25, 1.25), fill=DARK_COLOUR,
                  anchor='mm', align='center')
 
     # Move Type 2
@@ -29,7 +30,8 @@ def add_header(img, stats):
 def add_description(img, stats):
     d = ImageDraw.Draw(img)
 
-    wrapped_text(d, stats.move_effect, text_font(28), boundaries=(13.5, 4.5), xy=xy(7.25, 4.75), fill=DARK_COLOUR,
+    effect = str(stats.move_effect)
+    wrapped_text(d, effect, text_font(28, effect), boundaries=(13.5, 4.5), xy=xy(7.25, 4.75), fill=DARK_COLOUR,
                  anchor='mm', align='center')
 
 

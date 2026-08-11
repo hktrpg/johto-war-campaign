@@ -3,7 +3,9 @@ from PIL import ImageDraw
 from tqdm import tqdm
 
 from config import *
-from utils import xy, read_cube, get_img, wrapped_text, text_font, title_font
+from utils import xy, read_cube, get_img, wrapped_text, text_font, title_font, bold_font, resolve_move_effect
+
+# pandas used for na checks in archetype rendering
 
 
 def get_base():
@@ -20,15 +22,19 @@ def add_header(img, stats):
 
 
     # Move Name
-    wrapped_text(d, stats.move_name, text_font(36), boundaries=(9.5, 1.75), xy=xy(7.25, 1.25), fill=DARK_COLOUR,
+    name = str(stats.move_name)
+    wrapped_text(d, name, bold_font(36, name), boundaries=(9.5, 1.75), xy=xy(7.25, 1.25), fill=DARK_COLOUR,
                  anchor='mm', align='center')
 
     # Move Attack Strength
     if stats.move_attack_strength != "blank":
         d.text(xy(13.25, 1.25), str(stats.move_attack_strength), fill=DARK_COLOUR, font=title_font(44), anchor='mm')
 
+    def _valid_arch(value):
+        return pd.notna(value) and str(value).strip() not in {'', 'nan', 'None'}
+
     # Archetype Sections Based on stats.archetype_count
-    if str(stats.archetype_count) == "1":
+    if str(stats.archetype_count) == "1" and _valid_arch(stats.archetype_1):
         # Add archetype 1 image
         type_img = get_img(CARD_ASSETS_DIR / 'archetypes' / f'1_{stats.archetype_1}.png', xy(14.5, 1.15))
         img.paste(type_img, xy(0, 6.36), type_img)
@@ -37,7 +43,7 @@ def add_header(img, stats):
         text_fill = DARK_COLOUR if stats.archetype_1 in {"RECHARGE 1", "RECHARGE 2", "RECHARGE 3", "RECHARGE 4", "RECHARGE 5", "RECHARGE 6", "RECHARGE 7", "RECHARGE 8", "RECHARGE 9", "SONG", "PROTECT"} else WHITE_COLOUR
         d.text(xy(7.25, 6.91), str(stats.archetype_1), font=title_font(26), fill=text_fill, anchor='mm')
 
-    elif str(stats.archetype_count) == "2":
+    elif str(stats.archetype_count) == "2" and _valid_arch(stats.archetype_1) and _valid_arch(stats.archetype_2):
         # Add archetype 1 image
         type_img = get_img(CARD_ASSETS_DIR / 'archetypes' / f'21_{stats.archetype_1}.png', xy(7.2, 1.15))
         img.paste(type_img, xy(0, 6.36), type_img)
@@ -54,7 +60,7 @@ def add_header(img, stats):
         text_fill = DARK_COLOUR if stats.archetype_2 in {"RECHARGE 1", "RECHARGE 2", "RECHARGE 3", "RECHARGE 4", "RECHARGE 5", "RECHARGE 6", "RECHARGE 7", "RECHARGE 8", "RECHARGE 9", "SONG", "PROTECT"} else WHITE_COLOUR
         d.text(xy(10.63, 6.91), str(stats.archetype_2), font=title_font(23.5), fill=text_fill, anchor='mm')
 
-    elif str(stats.archetype_count) == "3":
+    elif str(stats.archetype_count) == "3" and all(_valid_arch(a) for a in (stats.archetype_1, stats.archetype_2, stats.archetype_3)):
         # Add archetype 1 image
         type_img = get_img(CARD_ASSETS_DIR / 'archetypes' / f'31_{stats.archetype_1}.png', xy(4.8, 1.15))
         img.paste(type_img, xy(0, 6.36), type_img)
@@ -78,11 +84,14 @@ def add_header(img, stats):
 def add_description(img, stats):
     d = ImageDraw.Draw(img)
 
+    effect = resolve_move_effect(stats)
+    if not effect:
+        return
     if str(stats.archetype_count) in {"1", "2", "3"}:
-        wrapped_text(d, stats.move_effect, text_font(28), boundaries=(13.5, 3.6), xy=xy(7.25, 4.27), fill=DARK_COLOUR,
+        wrapped_text(d, effect, text_font(28, effect), boundaries=(13.5, 3.6), xy=xy(7.25, 4.27), fill=DARK_COLOUR,
                      anchor='mm', align='center')
     else:
-        wrapped_text(d, stats.move_effect, text_font(28), boundaries=(13.5, 4.5), xy=xy(7.25, 4.75), fill=DARK_COLOUR,
+        wrapped_text(d, effect, text_font(28, effect), boundaries=(13.5, 4.5), xy=xy(7.25, 4.75), fill=DARK_COLOUR,
                      anchor='mm', align='center')
 
 

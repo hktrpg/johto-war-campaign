@@ -95,6 +95,12 @@ FONT_DIR = CARD_ASSETS_DIR / 'fonts'
 ORIENTAL_PATH = str(FONT_DIR / 'la_oriental.otf')
 BARLOW_PATH = str(FONT_DIR / 'barlow.ttf')
 BARLOW_BOLD_PATH = str(FONT_DIR / 'Barlow-Bold.ttf')
+# CJK body/title fallback (Windows): used when rendering Chinese cube text
+CJK_FONT_PATH = r'C:\Windows\Fonts\msyh.ttc'
+CJK_BOLD_FONT_PATH = r'C:\Windows\Fonts\msyhbd.ttc'
+# Microsoft JhengHei (正黑體) — QUEST effect body
+CJK_JH_FONT_PATH = r'C:\Windows\Fonts\msjh.ttc'
+CJK_JH_BOLD_FONT_PATH = r'C:\Windows\Fonts\msjhbd.ttc'
 
 # Colours
 DARK_COLOUR = (37, 37, 50)
